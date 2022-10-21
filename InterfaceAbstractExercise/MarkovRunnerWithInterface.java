@@ -9,6 +9,7 @@ public class MarkovRunnerWithInterface {
 		markov.setRandom(seed);
         System.out.println("running with " + markov);
         for(int k=0; k < 3; k++){
+
 			String st= markov.getRandomText(size);
 			printOut(st);
 		}
@@ -18,20 +19,25 @@ public class MarkovRunnerWithInterface {
         FileResource fr = new FileResource();
 		String st = fr.asString();
 		st = st.replace('\n', ' ');
+		String test = "This is a test yes this is test";
 		int size = 200;
 		int seed = 15;
 
-        MarkovZero mz = new MarkovZero();
-        runModel(mz, st, size,seed);
-    
-        MarkovOne mOne = new MarkovOne();
-        runModel(mOne, st, size,seed);
-        
-        MarkovModel mThree = new MarkovModel(3);
-        runModel(mThree, st, size,seed);
-        
-        MarkovFour mFour = new MarkovFour();
-        runModel(mFour, st, size,seed);
+//        MarkovZero mz = new MarkovZero();
+//        runModel(mz, st, size,seed);
+//
+//        MarkovOne mOne = new MarkovOne();
+//        runModel(mOne, st, size,seed);
+//
+//        MarkovModel mThree = new MarkovModel(3);
+//        runModel(mThree, st, size,seed);
+//
+//        MarkovFour mFour = new MarkovFour();
+//        runModel(mFour, st, size,seed);
+
+		EfficientMarkovModel ef = new EfficientMarkovModel(3);
+		runModel(ef,test,size,seed);
+		ef.printHashMapInfo();
 
     }
 
