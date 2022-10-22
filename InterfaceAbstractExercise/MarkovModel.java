@@ -44,6 +44,6 @@ public class MarkovModel extends AbstractMarkovModel {
 
     @Override
     public String toString() {
-        return "EfficientMarkovModel{}";
+        return "MarkovModel{}";
     }
 }

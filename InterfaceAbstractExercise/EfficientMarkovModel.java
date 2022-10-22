@@ -2,17 +2,18 @@ package InterfaceAbstractExercise;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class EfficientMarkovModel extends AbstractMarkovModel {
 
     private int nKey;
-    private HashMap <String, ArrayList<String>> answer;
+    private HashMap <String, ArrayList<String>> map;
 
     public EfficientMarkovModel(int nKey) {
         myRandom = new Random();
         this.nKey = nKey;
-        answer = new HashMap<>();
+        map = new HashMap<>();
     }
 
     public void setRandom(int seed){
@@ -31,16 +32,20 @@ public class EfficientMarkovModel extends AbstractMarkovModel {
         int index = myRandom.nextInt((myText.length()-nKey));
         String key = myText.substring(index, index + nKey);
         sb.append(key);
-        HashMap<String, ArrayList<String>> buid = buildMap();
+        map.clear();
+        buildMap();
         for(int k=0; k < numChars-nKey; k++){
             ArrayList<String> follows = getFollows(key);
+            if (follows == null) {
+                break;
+            }
             if (follows.size() == 0) {
                 break;
             }
-            index = myRandom.nextInt(follows.size());
-            String next = follows.get(index);
+            int newIndex = myRandom.nextInt(follows.size());
+            String next = follows.get(newIndex);
             sb.append(next);
-            key = key.substring(1)+next;
+            key = key.substring(1)+ next;
         }
         return sb.toString();
     }
@@ -48,25 +53,31 @@ public class EfficientMarkovModel extends AbstractMarkovModel {
     public HashMap<String,ArrayList<String>> buildMap() {
         int pos = 0;
         String key = myText.substring(pos, nKey);
-//        int index = myText.indexOf(key, pos);
-        for (int i = nKey; i < myText.length()-nKey; i++) {
-            String next = myText.substring(i, i + 1);
-            if (!answer.containsKey(key)) {
+            while (pos < myText.length()-nKey) {
+            int index = myText.indexOf(key,pos);
+            if (index == -1 || index >= (myText.length() - nKey) ) {
+                break;
+            }
+            String next = myText.substring(index +nKey, index + 1 + nKey);
+            if (!map.containsKey(key)) {
                 ArrayList<String> list = new ArrayList<>();
                 list.add(next);
-                answer.put(key, list);
-                key = key.substring(1) + next;
+                map.put(key, list);
             }
-            else key = key.substring(1) + next;
+            else {
+                map.get(key).add(next);
+            }
+            key = key.substring(1)+next;
+
+            pos +=1;
         }
 
-        return answer;
+        return map;
     }
 
     public ArrayList<String> getFollows(String key) {
 
-        ArrayList<String> follows = answer.get(key);
-//        System.out.println(follows);
+        ArrayList<String> follows = map.get(key);
         return follows;
     }
 
@@ -76,22 +87,20 @@ public class EfficientMarkovModel extends AbstractMarkovModel {
     }
 
     public void printHashMapInfo() {
-        HashMap<String, ArrayList<String>> buid = buildMap();
-        System.out.println(answer.keySet());
-        System.out.println(answer.size());
+//        System.out.println(map);
+        System.out.println(map.size());
         int largest = 0;
-        ArrayList<String> largestList = new ArrayList<>();
-        for (ArrayList<String> curr : answer.values()) {
+        for (ArrayList<String> curr : map.values()) {
             if (curr.size() > largest) {
                 largest = curr.size();
-                largestList = curr;
             }
         }
         System.out.println(largest);
-        System.out.println(largestList);
+        for (Map.Entry<String,ArrayList<String>> curr: map.entrySet()) {
+            if (curr.getValue().size() == largest) {
+                System.out.print(curr.getKey() + " ,");
+            }
+        }
     }
 
-    public static void main(String[] args) {
-
-    }
 }
